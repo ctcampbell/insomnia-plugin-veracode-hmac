@@ -22,7 +22,7 @@ function computeHashHex(message, key_hex) {
     return hmac;
 }
 
-function calulateDataSignature(apiKeyBytes, nonceBytes, dateStamp, data) {
+function calculateDataSignature(apiKeyBytes, nonceBytes, dateStamp, data) {
     let kNonce = computeHashHex(nonceBytes, apiKeyBytes);
     let kDate = computeHashHex(dateStamp, kNonce);
     let kSig = computeHashHex(requestVersion, kDate);
@@ -38,13 +38,20 @@ function toHexBinary(input) {
     return sjcl.codec.hex.fromBits(sjcl.codec.utf8String.toBits(input));
 }
 
+function removePrefixFromApiCredential(input) {
+    return input.split('-').at(-1);
+}
+
 function calculateAuthorizationHeader(id, key, hostName, uriString, urlQueryParams, httpMethod) {
+    const formattedId = removePrefixFromApiCredential(id);
+    const formattedKey = removePrefixFromApiCredential(key);
+
     uriString += urlQueryParams;
-    let data = `id=${id}&host=${hostName}&url=${uriString}&method=${httpMethod}`;
+    let data = `id=${formattedId}&host=${hostName}&url=${uriString}&method=${httpMethod}`;
     let dateStamp = Date.now().toString();
     let nonceBytes = newNonce(nonceSize);
-    let dataSignature = calulateDataSignature(key, nonceBytes, dateStamp, data);
-    let authorizationParam = `id=${id},ts=${dateStamp},nonce=${toHexBinary(nonceBytes)},sig=${dataSignature}`;
+    let dataSignature = calculateDataSignature(formattedKey, nonceBytes, dateStamp, data);
+    let authorizationParam = `id=${formattedId},ts=${dateStamp},nonce=${toHexBinary(nonceBytes)},sig=${dataSignature}`;
     let header = authorizationScheme + " " + authorizationParam;
     return header;
 }
