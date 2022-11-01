@@ -1,13 +1,20 @@
 {
     "name": "insomnia-plugin-veracode-hmac",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "main": "plugin.js",
+    "homepage": "https://github.com/veracode/insomnia-plugin-veracode-hmac",
+    "bugs": "https://github.com/veracode/insomnia-plugin-veracode-hmac/issues",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/veracode/insomnia-plugin-veracode-hmac.git"
+      },
     "insomnia": {
         "name": "veracode-hmac",
         "description": "Adds an HMAC authentication header to Veracode API requests in Insomnia"
     },
     "dependencies": {
-        "configparser": "^0.2.6",
+        "configparser": "^0.3.9",
         "sjcl": "^1.0.7"
     }
 }
